@@ -1,7 +1,7 @@
 "use strict";
 
 function onError(error) {
-    console.error(`Error: ${error}`);
+    console.error("error: " + error);
 }
 
 function sendMessageToTabs(tabs, message) {
@@ -34,7 +34,17 @@ browser.commands.onCommand.addListener(function(command) {
     }
 });
 
-browser.runtime.onMessage.addListener((request) => {
+browser.runtime.onMessage.addListener(function(request) {
     console.log(request['payload']);
-    return Promise.resolve({"response": "hey from background"});
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:5000/',
+            data: JSON.stringify(request),
+            contentType: "application/json",
+            dataType: "json",
+            success: (data) => resolve(data),
+            error: (error) => reject(error)
+        });
+    });
 });
