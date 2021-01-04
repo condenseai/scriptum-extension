@@ -12,16 +12,40 @@ function getSelectionText() {
 }
 
 function createTextBox() {
+    var height = '50px';
+    var button_width = '50px';
     var box = document.createElement('div');
     box.style.position = 'fixed';
-    box.style.top = '100px';
-    box.style.right = '10px';
-    box.style.width = '200px';
-    box.style.height = '100px';
-    box.style.color = 'black';
-    box.style.background = 'lightblue';
-    box.style.padding = '20px';
-    box.innerText = 'Hello world';
+    box.style.bottom = '100px';
+    box.style.left = '30px';
+    box.style.width = '90%';
+    box.style.height = height;
+    box.style.opacity = '0.80'
+    var area = document.createElement('textarea');
+    area.style.position = 'absolute';
+    area.style.width = '95%';
+    area.style.height = height;
+    area.style.left = '0px';
+    area.style.background = 'lightblue';
+    area.style.opacity = 'parent';
+    area.readOnly = true;
+    var button = document.createElement('button');
+    button.id = 'button';
+    button.style.position = 'absolute';
+    button.style.height = height;
+    button.style.width = button_width;
+    button.style.color = 'black';
+    button.style.opacity = 'parent'
+    button.style.right = '20px';
+    button.onclick =function () {
+        console.log(selection);
+        selection = iterateSelector(selection);
+        if (visible_box === true) {
+            updateBoxContent(box);
+        }
+    };
+    box.appendChild(area);
+    box.appendChild(button);
     // document.body.appendChild(box);
     return box;
 }
@@ -34,26 +58,38 @@ function toggleTextBox(box, status) {
     }
 }
 
-function updateBoxContent(box, result) {
-    var l = result['response'];
-    console.log(l);
-    box.innerText = l;
+function updateBoxContent(box, value) {
+    if (value != null){
+        CURRENT_RESULT = value;
+    }
+    box.children[0].innerText = CURRENT_RESULT[selection];
+}
+
+function iterateSelector(i) {
+    if(i < options.length-1){
+        return i+1;
+    } else {
+        return 0;
+    }
 }
 
 
 browser.runtime.onMessage.addListener(request => {
     if (request['message'] === "click") {
-        status = status === false;
-        toggleTextBox(box, status);
+        visible_box = visible_box === false;
+        toggleTextBox(box, visible_box);
     } else if (request['message'] === "command") {
-        if (status === true) {
+        if (visible_box === true) {
             const text = getSelectionText();
             if (text) {
                 console.log("selected: " + text);
-                const sending = browser.runtime.sendMessage({"payload": text});
-                sending.then(
-                    (result) => updateBoxContent(box, result),
-                    (e) => {console.err(e)}
+                updateBoxContent(box, {0:"", 1:"", 2:""});
+                browser.runtime.sendMessage({"content": text}).then(
+                    function(result) {
+                        console.log(JSON.stringify(result));
+                        updateBoxContent(box, result['result']);
+                    },
+                    function (e) {console.err(e)}
                 );
             } else {
                 console.log("hotkey was pressed without highlighted text")
@@ -64,5 +100,8 @@ browser.runtime.onMessage.addListener(request => {
     }
 });
 
-var status = false;
+var selection = 0;
+var CURRENT_RESULT = {0:"", 1:"", 2:""};
+var options = [0, 1, 2];
+var visible_box = false;
 var box = createTextBox();
