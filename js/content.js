@@ -20,7 +20,8 @@ function createTextBox() {
     box.style.left = '30px';
     box.style.width = '90%';
     box.style.height = height;
-    box.style.opacity = '0.80'
+    box.style.opacity = '0.80';
+    box.style.zIndex = '99999';
     var area = document.createElement('textarea');
     area.style.position = 'absolute';
     area.style.width = '95%';
@@ -35,7 +36,7 @@ function createTextBox() {
     button.style.height = height;
     button.style.width = button_width;
     button.style.color = 'black';
-    button.style.opacity = 'parent'
+    button.style.opacity = 'parent';
     button.style.right = '20px';
     button.onclick =function () {
         console.log(selection);
