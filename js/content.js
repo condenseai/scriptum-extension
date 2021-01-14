@@ -87,7 +87,8 @@ browser.runtime.onMessage.addListener(request => {
                 browser.runtime.sendMessage({"content": text}).then(
                     function(result) {
                         console.log(JSON.stringify(result));
-                        updateBoxContent(box, result['result']);
+                        // result = Object.values(result);
+                        updateBoxContent(box, result);
                     },
                     function (e) {console.err(e)}
                 );

@@ -1,9 +1,5 @@
 "use strict";
 
-const api_key = "***REMOVED***"
-const algo_name = "condense/generative_model/latestPrivate"
-// const algo_name = "demo/hello"
-
 function onError(error) {
     console.error("error: " + error);
 }
@@ -38,27 +34,17 @@ browser.commands.onCommand.addListener(function(command) {
     }
 });
 
+
 browser.runtime.onMessage.addListener(function(request) {
-    console.log("processing: " + JSON.stringify(request));
-    return new Promise((resolve) => {
-        var algo = Algorithmia.client(api_key)
-        .algo(algo_name)
-        .pipe(request);
-        algo.then(resolve)
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: 'POST',
+            url: 'https://n239t16d22.execute-api.us-east-1.amazonaws.com/dev',
+            data: JSON.stringify(request),
+            contentType: "application/json",
+            dataType: "json",
+            success: (data) => resolve(data),
+            error: (error) => reject(error)
+        });
     });
 });
-
-
-// browser.runtime.onMessage.addListener(function(request) {
-//     return new Promise((resolve, reject) => {
-//         $.ajax({
-//             type: 'POST',
-//             url: 'http://localhost:5000/',
-//             data: JSON.stringify(request),
-//             contentType: "application/json",
-//             dataType: "json",
-//             success: (data) => resolve(data),
-//             error: (error) => reject(error)
-//         });
-//     });
-// });
