@@ -1,3 +1,5 @@
+![scriptum_demo_1.gif](content/scriptum_demo_1.gif)
+
 # Scriptum - Firefox Browser Extension for Writers
 This browser extension helps you to come up with neat ways to complete sentences
 you find in the wild. 
