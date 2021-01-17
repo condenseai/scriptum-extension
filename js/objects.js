@@ -1,9 +1,10 @@
 
-
 function createTextBox(loading_elm) {
     var height = '50px';
     var button_width = '50px';
+
     var box = document.createElement('div');
+    box.id = "container";
     box.style.position = 'fixed';
     box.style.bottom = '100px';
     box.style.left = '30px';
@@ -26,11 +27,33 @@ function createTextBox(loading_elm) {
     button.style.position = 'absolute';
     button.style.height = height;
     button.style.width = button_width;
-    button.style.color = 'black';
+    button.style.background = 'lightblue';
     button.style.opacity = 'parent';
     button.style.right = '20px';
 
-    button.onclick =function () {
+    button.onmousedown = function (e) {
+        isDown = true;
+        offset = [
+            box.offsetLeft - e.clientX,
+            box.offsetTop - e.clientY
+        ];
+    };
+    button.onmouseup = function () {
+        isDown = false;
+    }
+    document.onmousemove = function (event) {
+        event.preventDefault();
+        if(isDown) {
+            mousePosition = {
+                x: event.clientX,
+                y: event.clientY
+            };
+            box.style.left = (mousePosition.x + offset[0]) + "px";
+            box.style.top = (mousePosition.y + offset[1]) + "px";
+        }
+    };
+
+    button.ondblclick =function () {
         console.log(selection);
         selection = iterateSelector(selection);
         if (visible_box === true) {
